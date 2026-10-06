@@ -1,27 +1,29 @@
 # Srouter
 
-Local AI router and dashboard.
-
-## Source
-
-The `srouter/` directory contains the 0.17.1 source, tests and build configuration, without historical commits, CI workflows or internal project documentation.
-
-```sh
-cd srouter
-npm install
-npm run build
-npm start
-```
+Все тоже самое что в github.com/decolua/9router но лучше.
 
 Dashboard: http://localhost:20127
 
+![Providers](srouter/readme-images/4.png)
+
+![API Key Providers](srouter/readme-images/6.png)
+
+![Quota Tracker](srouter/readme-images/8.png)
+
+![Plugins & Customization](srouter/readme-images/9.png)
+
+![Harness Apps](srouter/readme-images/10.png)
+
+![Web Search](srouter/readme-images/11.png)
+
+![Endpoint](srouter/readme-images/1.png)
+
+![Providers overview](srouter/readme-images/2.png)
+
 ## Release
 
-Download the Windows 0.17.1 archive from [Releases](https://github.com/seezyes/Srouter/releases/tag/v0.17.1), extract it and run `Start Srouter.cmd`.
-
-The archive contains no configured accounts or working databases.
+[Releases](https://github.com/seezyes/Srouter/releases/tag/v0.17.1), extract it and run `Start Srouter.cmd`.
 
 ## Licenses
 
-The root license is Apache-2.0. The source includes MIT-licensed upstream code; its copyright and license notices are preserved in `srouter/LICENSE` and `srouter/cli/LICENSE`. Third-party components retain their own licenses.
-
+Лицензия Apache-2.0 — см. [LICENSE](LICENSE) для деталей.
