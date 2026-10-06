@@ -1,0 +1,63 @@
+/* A persisted mode must not reveal SSR account labels before the guard mounts. */
+html.streamer-mode:not([data-streamer-ready="true"]) [data-streamer-surface] {
+  visibility: hidden !important;
+}
+
+/* Hide text only. Preserve backgrounds, icons, controls and cell geometry. */
+html.streamer-mode :is(
+  [data-streamer-sensitive]:not(option), [data-streamer-mask="true"], pre, textarea,
+  input:not([type]), input[type="text"], input[type="email"], input[type="password"],
+  input[type="url"], input[type="search"], input[type="tel"]
+),
+html.streamer-mode :is([data-streamer-sensitive]:not(option), [data-streamer-mask="true"], pre) *:not(.material-symbols-outlined) {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
+  caret-color: transparent !important;
+  transition: none !important;
+}
+
+html.streamer-mode :is(
+  input:not([type]), input[type="text"], input[type="email"], input[type="password"],
+  input[type="url"], input[type="search"], input[type="tel"], textarea
+)::placeholder {
+  color: transparent !important;
+}
+
+/* A marked form field reads as the same solid block as the masked labels. */
+html.streamer-mode :is(input, textarea)[data-streamer-mask="true"] {
+  background-color: #242936 !important;
+  border-color: transparent !important;
+}
+
+html.streamer-mode :is([data-streamer-sensitive], [data-streamer-mask="true"], pre) ::selection,
+html.streamer-mode :is([data-streamer-sensitive], [data-streamer-mask="true"], pre, input, textarea)::selection {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+html.streamer-mode :is(img, svg, canvas)[data-streamer-sensitive],
+html.streamer-mode :is([data-streamer-sensitive], [data-streamer-mask="true"]) :is(img, svg, canvas) {
+  visibility: hidden !important;
+}
+
+/* Replace inline private text in normal flow, never overlay the label or row. */
+html.streamer-mode :is(span, code)[data-streamer-sensitive] {
+  display: inline-block !important;
+  width: 112px !important;
+  min-width: 112px !important;
+  max-width: 112px !important;
+  height: 10px !important;
+  flex: none !important;
+  padding: 0 !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  vertical-align: middle !important;
+  overflow: hidden !important;
+  background-color: #242936 !important;
+  border-radius: 4px !important;
+}
+
+html.streamer-mode :is(span, code)[data-streamer-sensitive] > * {
+  display: none !important;
+}

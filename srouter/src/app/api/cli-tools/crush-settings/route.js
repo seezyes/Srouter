@@ -1,0 +1,143 @@
+"use server";
+
+import { NextResponse } from "next/server";
+import { resolveCliApiKey } from "../resolveApiKey.js";
+import fs from "fs/promises";
+import path from "path";
+import os from "os";
+import { exec } from "child_process";
+import { promisify } from "util";
+import { isManagedConfig, assertManagedConfig, readEditableConfig, configErrorStatus, configConflict } from "../_shared/managedConfig";
+
+const execAsync = promisify(exec);
+
+const getCrushConfigPath = () => {
+  const configDir = process.env.XDG_CONFIG_HOME || path.join(os.homedir(), ".config");
+  return path.join(configDir, "crush", "crush.json");
+};
+
+const getCrushDir = () => path.dirname(getCrushConfigPath());
+
+const checkCrushInstalled = async () => {
+  const isWindows = os.platform() === "win32";
+  try {
+    const command = isWindows ? "where crush" : "which crush";
+    await execAsync(command, { windowsHide: true });
+    return true;
+  } catch {
+    try {
+      await fs.access(getCrushConfigPath());
+      return true;
+    } catch {
+      return false;
+    }
+  }
+};
+
+const hasSrouterConfig = (settings) => {
+  if (!settings || !settings.providers) return false;
+  const p = settings.providers["srouter"];
+  return isManagedConfig(p);
+};
+
+const readConfig = async () => {
+  try {
+    const content = await fs.readFile(getCrushConfigPath(), "utf-8");
+    return JSON.parse(content);
+  } catch {
+    return null;
+  }
+};
+
+export async function GET() {
+  try {
+    const installed = await checkCrushInstalled();
+    if (!installed) {
+      return NextResponse.json({
+        installed: false,
+        config: null,
+        message: "Crush CLI is not installed",
+      });
+    }
+
+    const config = await readConfig();
+
+    return NextResponse.json({
+      installed: true,
+      config,
+      hasSrouter: hasSrouterConfig(config),
+      configPath: getCrushConfigPath(),
+    });
+  } catch (err) {
+    return NextResponse.json({ error: { message: err.message } }, { status: 500 });
+  }
+}
+
+export async function POST(request) {
+  let rawBody;
+  try {
+    rawBody = await request.json();
+  } catch {
+    return NextResponse.json({ error: { message: "Invalid JSON body" } }, { status: 400 });
+  }
+
+  try {
+    const { baseUrl, apiKey, model } = rawBody || {};
+    if (!baseUrl) {
+      return NextResponse.json({ error: { message: "baseUrl is required" } }, { status: 400 });
+    }
+
+    const configPath = getCrushConfigPath();
+    await fs.mkdir(getCrushDir(), { recursive: true });
+
+    const existing = await readEditableConfig(configPath);
+
+    if (!existing.providers) existing.providers = {};
+    if (typeof existing.providers !== "object" || Array.isArray(existing.providers)) throw configConflict();
+    assertManagedConfig(existing.providers.srouter);
+
+    const normalizedBaseUrl = baseUrl.endsWith("/v1") ? baseUrl : `${baseUrl}/v1`;
+    const modelId = model || "provider/model-id";
+
+    existing.providers["srouter"] = {
+      type: "openai-compat",
+      base_url: normalizedBaseUrl,
+      api_key: await resolveCliApiKey(apiKey),
+      models: [
+        {
+          id: modelId,
+          name: modelId,
+          context_window: 128000,
+        },
+      ],
+    };
+
+    await fs.writeFile(configPath, JSON.stringify(existing, null, 2), "utf-8");
+
+    return NextResponse.json({
+      success: true,
+      message: "Crush settings applied successfully!",
+      configPath,
+    });
+  } catch (err) {
+    return NextResponse.json({ error: { message: err.message } }, { status: configErrorStatus(err) });
+  }
+}
+
+export async function DELETE() {
+  try {
+    const configPath = getCrushConfigPath();
+    const existing = await readEditableConfig(configPath);
+
+    if (existing.providers && existing.providers["srouter"]) {
+      assertManagedConfig(existing.providers.srouter);
+      delete existing.providers["srouter"];
+      if (Object.keys(existing.providers).length === 0) delete existing.providers;
+      await fs.writeFile(configPath, JSON.stringify(existing, null, 2), "utf-8");
+    }
+
+    return NextResponse.json({ success: true, message: "Srouter removed from Crush" });
+  } catch (err) {
+    return NextResponse.json({ error: { message: err.message } }, { status: configErrorStatus(err) });
+  }
+}

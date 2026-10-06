@@ -1,0 +1,62 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "open-sse": [
+        "./open-sse"
+      ],
+      "open-sse/*": [
+        "./open-sse/*"
+      ]
+    },
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": true,
+    "incremental": true,
+    "module": "esnext",
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.mts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next-release-0.16.0/types/**/*.ts",
+    ".next-release-0.16.0/dev/types/**/*.ts",
+    ".next-release-0.17.0/types/**/*.ts",
+    ".next-release-0.17.0/dev/types/**/*.ts",
+    ".next-dev/types/**/*.ts",
+    ".next-dev/dev/types/**/*.ts",
+    ".next-pass9-main-127256fc6e/types/**/*.ts",
+    ".next-pass9-main-127256fc6e/dev/types/**/*.ts",
+    ".next-pass9-cli-127256fc6e/types/**/*.ts",
+    ".next-pass9-cli-127256fc6e/dev/types/**/*.ts",
+    ".next-release/types/**/*.ts",
+    ".next-release/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "vendor/omniroute",
+    ".next-dev",
+    ".next",
+    ".next-release"
+  ]
+}

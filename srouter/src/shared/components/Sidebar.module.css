@@ -1,0 +1,13 @@
+/* Only idle menu labels are brighter in dark mode. Parent colors still drive
+   active and hovered labels; icons, hints, badges and section captions inherit
+   their existing colors unchanged. Light-theme labels keep their original color. */
+:global(.dark) .navigation :global(.text-text-muted):not(:hover) > .label {
+  color: #b5b5b5;
+}
+
+/* Retain system-selected colors in high-contrast mode. */
+@media (forced-colors: active) {
+  :global(.dark) .navigation :global(.text-text-muted):not(:hover) > .label {
+    color: inherit;
+  }
+}

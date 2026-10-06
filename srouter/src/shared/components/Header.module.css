@@ -1,0 +1,137 @@
+.withSearch {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.searchSlot {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  grid-column: 1 / -1;
+  grid-row: 2;
+  width: 100%;
+  max-width: 36rem;
+  justify-self: center;
+}
+
+.searchBorder {
+  flex: 1;
+  min-width: 0;
+  padding: 1px;
+  border-radius: 10px;
+  background: var(--gradient-brand);
+}
+
+.searchBorder:focus-within {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.searchPlain {
+  width: 10rem;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+}
+
+.searchPlain:focus-within {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.searchInner {
+  position: relative;
+  border-radius: 9px;
+  background: var(--color-surface);
+}
+
+.searchInner .searchInput {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: 2.25rem;
+  margin: 0;
+  padding-block: 0;
+  padding-inline: 2.5rem;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: var(--color-text-main);
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.25rem;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
+
+/* Unlayered global Material Symbols styles override Tailwind icon sizes.
+   Size and center both glyphs explicitly, without changing their font family. */
+.searchInner .searchIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.searchLeadingIcon {
+  position: absolute;
+  inset-inline-start: 0.625rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--color-text-muted);
+}
+
+.searchClear {
+  position: absolute;
+  inset-inline-end: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.25rem;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.searchClear:hover {
+  color: var(--color-text-main);
+}
+
+.searchClear:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+@media (min-width: 640px) {
+  .searchPlain {
+    width: 13.75rem;
+  }
+}
+
+/* Equal side tracks center the search in the available header, not the viewport.
+   Below this breakpoint it gets its own row rather than squeezing the controls. */
+@media (min-width: 1280px) {
+  .withSearch {
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 30rem) minmax(0, 1fr);
+  }
+
+  .searchSlot {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
